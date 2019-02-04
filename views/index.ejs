@@ -1,5 +1,8 @@
+<script type="text/javascript">
+  //VSCode will mark an error here, but as far as I can tell this is valid.
+  window.initialData = <%- JSON.stringify(initialData) -%>
+</script>
+
 <%- include('header') -%>
-<div id="root">
-  <%- content %>
-</div>
+<div id="root"><%- initialMarkup -%></div>
 <%- include('footer') -%>
