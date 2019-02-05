@@ -2,6 +2,13 @@ import React from 'react';
 import Header from './Header';
 import ContestList from './ContestList';
 
+//This is an alias function for window.history.pushState
+//The purpose of this is that history.pushState is not 
+//supported by older browsers.
+//If I wanted to support them I would only need to change this function
+const pushState = (object, url) => 
+  window.history.pushState(obj, '', url);
+
 class App extends React.Component {
   // constructor(props) {
   //   super(props);
@@ -16,26 +23,28 @@ class App extends React.Component {
 
   //timers, listeners, ajax calls usually go here.
   componentDidMount() {
-    //ajax call to retrieve data 
-    // axios.get('/api/contests')
-    //   .then(resp => {
-    //     console.info(resp.data.contests);
-    //     this.setState({
-    //       contests: resp.data.contests
-    //     });
-    //   })
-    //   .catch(console.error);
+
   }
 
   componentWillUnmount() {
     //Clean timers, listeners
   }
 
+  fetchContest = (contestId) => {
+    pushState(
+      { currentContestId: contestId },
+      `/contest/${contestId}`
+    );
+  };
+
   render() {
     return (
       <div className="App" >
         <Header message={this.state.pageHeader} />
-        <ContestList contests={this.state.contests} />
+        <ContestList 
+          onContestClick={this.fetchContest}
+          contests={this.state.contests} 
+        />
       </div>
     );
   }
