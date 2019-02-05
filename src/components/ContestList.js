@@ -5,12 +5,12 @@ import ContestPreview from './ContestPreview';
 const ContestList = ({contests, onContestClick}) => {
   return(
     <div className="ContestList">
-      {contests.map(contest =>
+      {Object.keys(contests).map(contestId =>
         //Whenever you .map() you need to supply a unique id.
         <ContestPreview 
-          key={contest.id} 
+          key={contestId} 
           onClick={onContestClick}
-          {...contest} 
+          {...contests[contestId]} 
         />
       )}
     </div>
@@ -19,7 +19,7 @@ const ContestList = ({contests, onContestClick}) => {
 
 //Type Checking
 ContestList.propTypes = {
-  contest: PropTypes.array,
+  contest: PropTypes.object,
   onContestClick: PropTypes.func.isRequired,
 };
  

@@ -10,7 +10,7 @@ import App from './components/App'
 //But the server will have already sent a DOM that is identical to the virtual-DOM
 //React will try to render, and react will do nothing.
 ReactDOM.render(
-  <App initialContests={window.initialData.contests} />,
+  <App initialData={window.initialData} />,
   document.getElementById('root')
 );
 
