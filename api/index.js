@@ -1,26 +1,40 @@
 import express from 'express';
-import data from '../src/testData';
+import { MongoClient } from 'mongodb';
+import assert from 'assert';
+import config from '../config';
+
+//Connect to mongodb
+let db;
+MongoClient.connect(config.mongodbUri, { useNewUrlParser: true }, (err, client) => {
+  assert.equal(null, err);
+  console.log("Connected to Mongodb");
+
+  db = client.db('test');
+});
 
 const router = express.Router();
 
-//We want to return an object instead of an array.
-//That way we have constant time lookups on the data.
-const contestsObj = data.contests.reduce((obj, contest) => {
-  obj[contest.id] = contest;
-  return obj;
-}, {})
-
 router.get('/contests', (req, res) => {
-  res.send({ 
-    contests: contestsObj
-  });
+  let contests = {};
+  //Nodejs retrieves the data asynchronously 
+  db.collection('contests').find({})
+    .forEach((err, contest) => {
+      assert.equal(null, err);
+      console.log(contest);
+
+      
+      if(!contest) { //No more contests
+        res.send(contests);
+        return;
+      }
+
+      //Add each contest to contests array
+      contests[contest.id] = contest;
+     });
 });
 
 router.get('/contests/:contestId', (req, res) => {
-  let contest = contestsObj[req.params.contestId];
-  contest.description = 'Lorem ipsum dolor sit amet'
 
-  res.send(contest);
 });
 
 export default router;
