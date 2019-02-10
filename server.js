@@ -2,9 +2,12 @@ import config from './config';
 import apiRouter from './api';
 import sassMiddleware from 'node-sass-middleware';
 import path from 'path';
-
+import serverRender from './serverRender';
 import express from 'express';
+import bodyParser from 'body-parser';
+
 const server = express();
+server.use(bodyParser.json());
 
 server.use(sassMiddleware({
   src: path.join(__dirname, 'sass'),
@@ -14,7 +17,6 @@ server.use(sassMiddleware({
 //Set ejs to the template engine
 server.set('view engine', 'ejs');
 
-import serverRender from './serverRender';
 
 server.get(['/', '/contest/:contestId'], (req, res) => {
   serverRender(req.params.contestId)
@@ -24,7 +26,10 @@ server.get(['/', '/contest/:contestId'], (req, res) => {
         initialData
       });
     })
-    .catch(console.error);
+    .catch(error => {
+      console.error(error);
+      res.status(404).send("Bad Request");
+    });
 });
 
 //Using the express middleware this line is

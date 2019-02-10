@@ -1,5 +1,5 @@
 import express from 'express';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectID } from 'mongodb';
 import assert from 'assert';
 import config from '../config';
 
@@ -22,7 +22,6 @@ router.get('/contests', (req, res) => {
   .find({})
   .project({
     //Return only id, categoryName, and contestName values
-    id: true,
     categoryName: true,
     contestName: true
   })
@@ -30,7 +29,7 @@ router.get('/contests', (req, res) => {
     //Construct an object from the returned data and send it
     assert.equal(null, err);
     documents.forEach((contest) => {
-      contests[contest.id] = contest;
+      contests[contest._id] = contest;
     })
     //response must be sent here because nodejs queries the database asynchronously.
     res.send({ contests });
@@ -39,16 +38,16 @@ router.get('/contests', (req, res) => {
 });
 
 router.get('/names/:nameIds', (req, res) => {
-  const nameIds = req.params.nameIds.split(',').map(Number);
+  const nameIds = req.params.nameIds.split(',').map(ObjectID);
   let names = {};
   //Query the database for all contests
   db.collection('names')
-  .find({ id: {$in: nameIds }})
+  .find({ _id: {$in: nameIds }})
   .toArray((err, documents) => {
     //Construct an object from the returned data and send it
     assert.equal(null, err);
     documents.forEach((name) => {
-      names[name.id] = name;
+      names[name._id] = name;
     })
     //response must be sent here because nodejs queries the database asynchronously.
     res.send({ names });
@@ -58,9 +57,14 @@ router.get('/names/:nameIds', (req, res) => {
 
 router.get('/contests/:contestId', (req, res) => {
   db.collection('contests')
-  .findOne({ id: Number(req.params.contestId) })
+  .findOne({ _id: ObjectID(req.params.contestId) })
   .then(contest => res.send(contest))
   .catch(console.error);
 });
+
+router.post('/names', (req, res) => {
+  //req.body
+  console.log(req.body);
+})
 
 export default router;
