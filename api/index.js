@@ -59,12 +59,35 @@ router.get('/contests/:contestId', (req, res) => {
   db.collection('contests')
   .findOne({ _id: ObjectID(req.params.contestId) })
   .then(contest => res.send(contest))
-  .catch(console.error);
+  .catch(error => {
+    console.error(error);
+    res.status(404).send("Bad Request");
+  });
 });
 
 router.post('/names', (req, res) => {
-  //req.body
-  console.log(req.body);
+  const contestId = ObjectID(req.body.contestId);
+  const name = req.body.newName;
+  
+  //Data validation should probably be done here
+
+  db.collection('names').insertOne({ name }).then(result => 
+    db.collection('contests').findAndModify(
+      { _id: contestId },
+      [],
+      { $push: { nameIds: result.insertedId } },
+      { new: true }
+    ).then(doc => 
+      res.send({
+        updatedContest: doc.value,
+        newName: { _id: result.insertedId, name }
+      })
+    )
+  )
+  .catch(error => {
+    console.error(error);
+    res.status(404).send("Bad Request");
+  });
 })
 
 export default router;
