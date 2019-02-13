@@ -2,6 +2,7 @@ import express from 'express';
 import { MongoClient, ObjectID } from 'mongodb';
 import assert from 'assert';
 import config from '../config';
+import validName from './validationFunctions';
 
 //Connect to mongodb
 let db;
@@ -68,26 +69,29 @@ router.get('/contests/:contestId', (req, res) => {
 router.post('/names', (req, res) => {
   const contestId = ObjectID(req.body.contestId);
   const name = req.body.newName;
-  
-  //Data validation should probably be done here
 
-  db.collection('names').insertOne({ name }).then(result => 
-    db.collection('contests').findAndModify(
-      { _id: contestId },
-      [],
-      { $push: { nameIds: result.insertedId } },
-      { new: true }
-    ).then(doc => 
-      res.send({
-        updatedContest: doc.value,
-        newName: { _id: result.insertedId, name }
-      })
+  if(validName(name)) {
+    db.collection('names').insertOne({ name }).then(result => 
+      db.collection('contests').findAndModify(
+        { _id: contestId },
+        [],
+        { $push: { nameIds: result.insertedId } },
+        { new: true }
+      ).then(doc => 
+        res.send({
+          updatedContest: doc.value,
+          newName: { _id: result.insertedId, name }
+        })
+      )
     )
-  )
-  .catch(error => {
-    console.error(error);
-    res.status(404).send("Bad Request");
-  });
+    .catch(error => {
+      console.error(error);
+      res.status(404).send("Bad Request");
+    });
+  } else {
+    res.send("Name is invalid");
+  }
+
 })
 
 export default router;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import validName from './validationFunctions';
 
 class Contest extends Component {
 
@@ -10,9 +11,12 @@ class Contest extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     //Read the value that the user typed
-    this.props.addName(this.refs.newNameInput.value, this.props._id);
-    //Clear input form
-    this.refs.newNameInput.value = '';
+    const nameInput = this.refs.newNameInput.value;
+    if(validName(nameInput)) {
+      this.props.addName(this.refs.newNameInput.value, this.props._id);
+      //Clear input form
+      this.refs.newNameInput.value = '';
+    } 
   };
 
   render() {
