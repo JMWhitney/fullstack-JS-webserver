@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import validName from './validationFunctions';
+import validName from '../validationFrontEnd';
 
 class Contest extends Component {
 
   componentDidMount() {
     this.props.fetchNames(this.props.nameIds);
-  }
+
+    //Hide error message.
+    document.getElementById("name-error").style.display = "none";
+  };
 
   handleSubmit = (event) => {
     event.preventDefault();
@@ -16,7 +19,10 @@ class Contest extends Component {
       this.props.addName(this.refs.newNameInput.value, this.props._id);
       //Clear input form
       this.refs.newNameInput.value = '';
-    } 
+      document.getElementById("name-error").style.display = "none";
+    } else {
+      document.getElementById("name-error").style.display = "block";
+    }
   };
 
   render() {
@@ -40,9 +46,12 @@ class Contest extends Component {
           <div className="panel-body">
             <ul className="list-group">
             {this.props.nameIds.map(nameId => 
-              <li key={nameId} className="list-group-item">
-                {this.props.lookupName(nameId).name}
-              </li>
+              <div className="flex-horizontal">
+                <li key={nameId} className="list-group-item">
+                  {this.props.lookupName(nameId).name}
+                </li>
+                <button className="btn btn-danger">Delete</button>
+              </div>
             )}
             </ul>
           </div>
@@ -53,6 +62,7 @@ class Contest extends Component {
             <h3 className="panel-title">Propose a New Name</h3>
           </div>
           <div className="panel-body">
+            <span id="name-error" className="alert alert-danger">This is an invalid name. Please try again</span>
             <form onSubmit={this.handleSubmit}>
               <div className="input-group">
                 <input type="text" 

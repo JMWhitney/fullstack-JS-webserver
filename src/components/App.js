@@ -106,7 +106,6 @@ class App extends React.Component {
     return this.state.names[nameId];
   };
 
-
   addName = (newName, contestId) => {
     api.addName(newName, contestId).then(resp => 
       this.setState({
@@ -120,6 +119,10 @@ class App extends React.Component {
         }
       })
     )
+  }
+
+  removeName = (name, contestId) => {
+    
   }
 
   currentContent() {

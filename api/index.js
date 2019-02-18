@@ -2,7 +2,7 @@ import express from 'express';
 import { MongoClient, ObjectID } from 'mongodb';
 import assert from 'assert';
 import config from '../config';
-import validName from './validationFunctions';
+import validName from './validationBackEnd';
 
 //Connect to mongodb
 let db;
@@ -89,9 +89,16 @@ router.post('/names', (req, res) => {
       res.status(404).send("Bad Request");
     });
   } else {
-    res.send("Name is invalid");
+    console.log("Invalid name");
   }
+})
 
+router.put('/contests/:id', (request, response) => {
+
+})
+
+router.delete('/contests/:id', (request, response) => {
+  
 })
 
 export default router;

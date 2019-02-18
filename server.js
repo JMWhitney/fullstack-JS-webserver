@@ -17,7 +17,6 @@ server.use(sassMiddleware({
 //Set ejs to the template engine
 server.set('view engine', 'ejs');
 
-
 server.get(['/', '/contest/:contestId'], (req, res) => {
   serverRender(req.params.contestId)
     .then(( { initialMarkup, initialData } ) => {
@@ -45,6 +44,7 @@ server.use(express.static('public'));
 server.use('/api', apiRouter);
 server.use(express.static('public'));
 
+//start express server
 server.listen(config.port, config.host, () => {
   console.info('Express listening on port ', config.port);
 })
