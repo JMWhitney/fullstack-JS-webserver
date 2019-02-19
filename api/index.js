@@ -67,6 +67,7 @@ router.get('/contests/:contestId', (req, res) => {
 });
 
 router.post('/names', (req, res) => {
+
   const contestId = ObjectID(req.body.contestId);
   const name = req.body.newName;
 
@@ -93,12 +94,34 @@ router.post('/names', (req, res) => {
   }
 })
 
-router.put('/contests/:id', (request, response) => {
-
+router.put('/names/:nameId', (req, res) => {
+  res.json({
+    params: req.params,
+  });
 })
 
-router.delete('/contests/:id', (request, response) => {
-  
+router.delete('/names/:nameId/:contestId', (req, res) => {
+
+  const contestId = ObjectID(req.params.contestId);
+  const nameId = ObjectID(req.params.nameId);
+
+  // Delete the nameId from the collection of names. Then go to the collection of contests
+  // And remove the nameId from the array of that contests names.
+  db.collection('names').deleteOne({ _id: nameId }).then(result => 
+    db.collection('contests').updateOne(
+        { _id: contestId },
+        { $pull: { nameIds: nameId} }
+      ).then(doc => 
+        res.send({
+          updatedContest: doc.value,
+          removedName: { _id: nameId }
+        })
+      )
+    )
+    .catch(error => {
+        console.error(error);
+        res.status(404).send("Bad Request");
+    });
 })
 
 export default router;

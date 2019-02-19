@@ -25,6 +25,28 @@ class Contest extends Component {
     }
   };
 
+  //With the edit and delete functions we want to pass the nameId from the context in which
+  //The functions were called. To do this with event handlers you use what is called currying.
+  //The idea here is to create a function that accepts nameId,
+  //and returns the event function. That way we have access to both variables.
+  //ES5 syntax would look like:
+
+  // handleEdit(nameId) {
+  //   return function(event) {
+
+  //   }
+  // } 
+
+  handleEdit = nameId => event => {
+    event.preventDefault();
+    this.props.editName(nameId);
+  }
+
+  handleDelete = nameId => event => {
+    event.preventDefault();
+    this.props.deleteName(nameId, this.props._id);
+  }
+
   render() {
     return (
       <div className="Contest">
@@ -46,11 +68,12 @@ class Contest extends Component {
           <div className="panel-body">
             <ul className="list-group">
             {this.props.nameIds.map(nameId => 
-              <div className="flex-horizontal">
-                <li key={nameId} className="list-group-item">
+              <div key={nameId} className="flex-horizontal">
+                <li className="list-group-item">
                   {this.props.lookupName(nameId).name}
                 </li>
-                <button className="btn btn-danger">Delete</button>
+                <button onClick={this.handleEdit(nameId)} className="btn btn-info">Edit</button>
+                <button onClick={this.handleDelete(nameId)} className="btn btn-danger">Delete</button>
               </div>
             )}
             </ul>
@@ -70,7 +93,7 @@ class Contest extends Component {
                 ref="newNameInput" 
                 className="form-control" />
                 <span className="input-group-btn">
-                  <button type="submit" className="btn btn-info">Sumbit</button>
+                  <button type="submit" className="btn btn-success">Sumbit</button>
                 </span>
               </div>
             </form>
@@ -86,6 +109,7 @@ class Contest extends Component {
   }
 }
 
+//Type checking
 Contest.propTypes = {
   _id: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
@@ -94,6 +118,8 @@ Contest.propTypes = {
   nameIds: PropTypes.array.isRequired,
   lookupName: PropTypes.func.isRequired,
   addName: PropTypes.func.isRequired,
+  editName: PropTypes.func.isRequired,
+  deleteName: PropTypes.func.isRequired,
 }
  
 export default Contest;

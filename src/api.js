@@ -1,5 +1,4 @@
 import axios from 'axios';
-//Asynchronously query the APIs defined by our server
 
 export const fetchContest = contestId => {
   return axios.get(`/api/contests/${contestId}`)
@@ -21,6 +20,12 @@ export const addName = (newName, contestId) => {
               .then(resp => resp.data);
 }
 
-export const removeName = (name, contestId) => {
+export const editName = (nameId) => {
+  return axios.put(`/api/names/${nameId}`)
+              .then(resp => resp.data)
+}
 
+export const deleteName = (nameId, contestId) => {
+  return axios.delete(`/api/names/${nameId}/${contestId}`)
+               .then(resp => resp.data)
 }

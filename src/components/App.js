@@ -121,8 +121,22 @@ class App extends React.Component {
     )
   }
 
-  removeName = (name, contestId) => {
-    
+  editName = (nameId) => {
+    console.log("Editing ", nameId);
+    //Edit name in database
+    api.editName(nameId);
+
+    //Update state
+
+  }
+
+  deleteName = (nameId, contestId) => {
+    console.log("Deleting ", nameId, " from ", contestId);
+    //Delete name from database
+    api.deleteName(nameId, contestId);
+
+
+    //TODO: delete name from contest state
   }
 
   currentContent() {
@@ -132,6 +146,8 @@ class App extends React.Component {
         fetchNames={this.fetchNames}
         lookupName={this.lookupName}
         addName={this.addName}
+        editName={this.editName}
+        deleteName={this.deleteName}
         {...this.currentContest()}
       />;
     }
