@@ -135,8 +135,20 @@ class App extends React.Component {
     //Delete name from database
     api.deleteName(nameId, contestId);
 
+    //Remove name from list of names
+    let nextNames = this.state.names;
+    delete nextNames[nameId];
 
-    //TODO: delete name from contest state
+    //Remove name from current contest
+    let nextContests = this.state.contests;
+    const nameIndex = nextContests[contestId].nameIds.indexOf(nameId);
+    nextContests[contestId].nameIds.splice(nameIndex, 1);
+
+    //update state
+    this.setState({
+        contests: nextContests,
+        names: nextNames
+    })
   }
 
   currentContent() {
