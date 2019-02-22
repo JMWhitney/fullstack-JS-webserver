@@ -9,7 +9,7 @@ import App from './components/App'
 //In this instance the data will be passed to React to re-render,
 //But the server will have already sent a DOM that is identical to the virtual-DOM
 //React will try to render, and react will do nothing.
-ReactDOM.render(
+ReactDOM.hydrate(
   <App initialData={window.initialData} />,
   document.getElementById('root')
 );
