@@ -19,7 +19,7 @@ This is a demonstration exercise, to learn fullstack javascript development. It 
 
 #Workflow tools
 1. Webpack - To bundle all client resources into a single file.
-2. babel - to 
+2. babel - To automatically transpile es6 notation and JSX to work with node. 
 3. nodemon - To automatically restart the server when changes are made.
 4. eslint - To help delint the code
 
